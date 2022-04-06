@@ -15,8 +15,6 @@ color_code = [0xFFE4E1, 0x00FF7F, 0xD8BFD8, 0xDC143C, 0xFF4500, 0xDEB887, 0xADFF
 
 bot = discord.Bot()
 
-keep_alive()
-
 def checkVote(userId):
     check = requests.get("https://top.gg/api/bots/913442195388903467/check?userId={}".format(str(userId)), headers={"Authorization": os.environ['TOPGG_AUTH']})
     if check.json().get("voted") == 1:
