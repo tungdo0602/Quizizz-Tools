@@ -47,17 +47,17 @@ async def help(ctx):
 async def vote(ctx):
     await ctx.defer()
     if checkVote(ctx.author.id) == True:
-        embed=discord.Embed(title=" ", color=random.choice(color_code))
+        embed=discord.Embed(title="  ", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
         embed.set_footer(text="You have voted today!")
         embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
     elif checkVote(ctx.author.id) == False:
-        embed=discord.Embed(title=" ", color=random.choice(color_code))
+        embed=discord.Embed(title="  ", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
         embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
         embed.set_footer(text="You haven't vote today!")
     else:
-        embed=discord.Embed(title=" ", color=random.choice(color_code))
+        embed=discord.Embed(title="  ", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
         embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
         embed.set_footer(text="An error occurred while trying to get the value!")
