@@ -47,13 +47,20 @@ async def help(ctx):
 async def vote(ctx):
     await ctx.defer()
     if checkVote(ctx.author.id) == True:
-        embed=discord.Embed(title="You have voted today!", color=random.choice(color_code))
+        embed=discord.Embed(title="\u200b", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
-        embed.set_footer(text="Thank you for voting our bot!")
+        embed.set_footer(text="You have voted today!")
+        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
     elif checkVote(ctx.author.id) == False:
-        embed=discord.Embed(title="  ", color=random.choice(color_code))
+        embed=discord.Embed(title="\u200b", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
-        embed.add_field(name="Quizizz Tools", value="You haven't vote today, click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+        embed.set_footer(text="You haven't vote today!")
+    else:
+        embed=discord.Embed(title="\u200b", color=random.choice(color_code))
+        embed.set_author(name="Vote Status")
+        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+        embed.set_footer(text="An error occurred while trying to get the value!")
     await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Blacklist user!")
@@ -80,7 +87,7 @@ async def clearblacklist(ctx):
     except:
       await ctx.respond("Failed to clear the list!")
 
-@bot.slash_command(description="Adding Powerup to player without waiting or wishing for lucky ;)")
+@bot.slash_command(description="Add Powerup to player")
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch"])):
   await ctx.defer()
   with open("blacklist.txt") as blacklist:
