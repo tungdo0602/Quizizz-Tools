@@ -24,8 +24,28 @@ def checkVote(userId):
     else:
         return None
 
+@bot.slash_command(description="Show list of commands")
+async def help(ctx):
+    await ctx.defer()
+    embed=discord.Embed()
+    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.webp?size=160")
+    embed.add_field(name="__**Main Commands**__", value=" ", inline=False)
+    embed.add_field(name="/accountgenerator", value="Generate real quizizz account.", inline=False)
+    embed.add_field(name="/addplayer", value="Add player to room.", inline=False)
+    embed.add_field(name="/addpowerup", value="Add powerup to player.", inline=False)
+    embed.add_field(name="/floodroom", value="Flood quizizz room with bot.", inline=False)
+    embed.add_field(name="/getroominfo", value="Get quizizz room info (raw).", inline=False)
+    embed.add_field(name="/roomfinder", value="Find a active quizizz room.", inline=False)
+    embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
+    embed.add_field(name="__**Other Commands**__", value=" ", inline=False)
+    embed.add_field(name="/vote", value="Check if you vote or not.", inline=False)
+    embed.add_field(name="/blacklist", value="Temporary blacklist user from the bot.", inline=False)
+    embed.add_field(name="/clearblacklist", value="Clear the blacklist.", inline=False)
+    await ctx.respond(embed=embed)
+
 @bot.slash_command(description="Vote for the bot!")
 async def vote(ctx):
+    await ctx.defer()
     if checkVote(ctx.author.id) == True:
         embed=discord.Embed(title="You have voted today!", color=random.choice(color_code))
         embed.set_author(name="Vote Status")
@@ -62,6 +82,7 @@ async def clearblacklist(ctx):
 
 @bot.slash_command(description="Adding Powerup to player without waiting or wishing for lucky ;)")
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch"])):
+  await ctx.defer()
   with open("blacklist.txt") as blacklist:
     if str(ctx.author.id) in blacklist.read():
       await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
