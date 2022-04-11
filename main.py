@@ -51,7 +51,7 @@ async def help(ctx):
     await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Vote for the bot!")
-@bot.commands.cooldown(1, 30, type=bot.commands.BucketType.user)
+@commands.cooldown(1, 30, type=commands.BucketType.user)
 async def vote(ctx):
     await ctx.defer()
     embed=discord.Embed(title="Vote Status", color=random.choice(color_code))
