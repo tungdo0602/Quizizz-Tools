@@ -34,10 +34,10 @@ def checkVote(userId):
 @bot.event
 async def on_application_command_error(ctx, error):
     print(error)
-    if isinstance(error, discord.errors.ApplicationCommandInvokeError):
-        await ctx.respond("You're on cooldown!")
+    if "You are on cooldown" in error:
+        await ctx.respond("**{}**".format(error))
     else:
-        await ctx.respond("Unknown Error!")
+        await ctx.respond("**Unknown Error!**")
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
