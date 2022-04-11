@@ -53,18 +53,21 @@ async def help(ctx):
 @bot.slash_command(description="Vote for the bot!")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def vote(ctx):
-    await ctx.defer()
-    embed=discord.Embed(title="Vote Status", color=random.choice(color_code))
-    if checkVote(ctx.author.id) == True:
-        embed.set_footer(text="You have voted today!")
-        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-    elif checkVote(ctx.author.id) == False:
-        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-        embed.set_footer(text="You haven't vote today!")
-    else:
-        embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-        embed.set_footer(text="An error occurred while trying to get the value!")
-    await ctx.respond(embed=embed)
+    try:
+        await ctx.defer()
+        embed=discord.Embed(title="Vote Status", color=random.choice(color_code))
+        if checkVote(ctx.author.id) == True:
+            embed.set_footer(text="You have voted today!")
+            embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+        elif checkVote(ctx.author.id) == False:
+            embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+            embed.set_footer(text="You haven't vote today!")
+        else:
+            embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+            embed.set_footer(text="An error occurred while trying to get the value!")
+        await ctx.respond(embed=embed)
+    except Exception:
+        await ctx.respond(Exception)
 
 @bot.slash_command(description="Blacklist user!")
 async def blacklist(ctx, userid: str):
