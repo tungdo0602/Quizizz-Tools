@@ -30,7 +30,7 @@ def checkVote(userId):
         return False
     else:
         return None
-
+"""
 @bot.event
 async def on_application_command_error(ctx, error):
     print(error)
@@ -38,7 +38,7 @@ async def on_application_command_error(ctx, error):
         await ctx.respond("**{}**".format(error))
     else:
         await ctx.respond("**Unknown Error!**")
-
+"""
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
     await ctx.defer()
