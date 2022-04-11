@@ -33,6 +33,7 @@ def checkVote(userId):
 
 @bot.event
 async def on_application_command_error(ctx, error):
+    print(error)
     if isinstance(error, discord.errors.ApplicationCommandInvokeError):
         await ctx.respond("You're on cooldown!")
     else:
