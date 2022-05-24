@@ -37,6 +37,11 @@ async def on_application_command_error(ctx, error):
     else:
         await ctx.respond("**Unknown Error!**")
 
+@bot.slash_command(description="Pong!")
+async def ping(ctx):
+  await ctx.defer()
+  await ctx.respond("Pong! {}".format(bot.latency))
+
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
     await ctx.defer()
