@@ -40,7 +40,7 @@ async def on_application_command_error(ctx, error):
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
   await ctx.defer()
-  await ctx.respond("Pong! {}".format(bot.latency))
+  await ctx.respond("Pong! `{} ms`".format(bot.latency))
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
