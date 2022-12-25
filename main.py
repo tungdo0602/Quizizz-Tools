@@ -106,7 +106,7 @@ async def clearblacklist(ctx):
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch"])):
   await ctx.defer()
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     raw_powerup = ""
@@ -147,7 +147,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def accountgenerator(ctx):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     email = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=random.randint(8, 10))) + random.choice(['@gmail.com', '@apple.com', '@microsoft.com', '@outlook.com'])
@@ -193,7 +193,7 @@ async def accountgenerator(ctx):
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def roomfinder(ctx):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     await ctx.respond("Please wait some seconds to it find the working code!")
@@ -218,7 +218,7 @@ async def roomfinder(ctx):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     if botamount > 25:
@@ -241,7 +241,7 @@ async def floodroom(ctx, roomcode: str, botamount: int):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
@@ -254,7 +254,7 @@ async def getroominfo(ctx, roomcode: str):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
@@ -274,7 +274,7 @@ async def addplayer(ctx, roomcode: str, playername: str):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def startgame(ctx, roomcode: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clear the blacklist.**")
+    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
