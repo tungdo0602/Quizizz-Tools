@@ -84,7 +84,8 @@ async def blacklist(ctx, userid: str):
     return
   else:
     try:
-      print(userid)
+      pingchar = ['<', '>', '@', '!']
+      userid = ''.join([c for c in userid if c not in pingchar])
       open("blacklist.txt", "a").write(userid + " ")
       await ctx.respond(f"Blacklisted `{userid}`")
     except:
