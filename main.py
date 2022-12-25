@@ -85,7 +85,7 @@ async def blacklist(ctx, userid: str):
   else:
     try:
       open("blacklist.txt", "a").write(userid + " ")
-      await ctx.respond(f"Successfully Blacklisted `{userid}`")
+      await ctx.respond(f"_Blacklisted <@`{userid}`>_", allowed_mentions = discord.AllowedMentions(replied_user=False)))
     except:
       await ctx.respond(f"Failed to blacklist `{userid}`")
 
@@ -97,7 +97,7 @@ async def clearblacklist(ctx):
   else:
     try:
       open("blacklist.txt", "w").close()
-      await ctx.respond("Successfully cleared the list!")
+      await ctx.respond("Cleared the list!")
     except:
       await ctx.respond("Failed to clear the list!")
 
@@ -106,7 +106,7 @@ async def clearblacklist(ctx):
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch"])):
   await ctx.defer()
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     raw_powerup = ""
@@ -147,7 +147,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def accountgenerator(ctx):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     email = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=random.randint(8, 10))) + random.choice(['@gmail.com', '@apple.com', '@microsoft.com', '@outlook.com'])
@@ -181,7 +181,7 @@ async def accountgenerator(ctx):
 }
     account = requests.post("https://quizizz.com/_api/landingPg/user/register", headers=headers, json=payload)
     if account.status_code == 201:
-      await ctx.respond("Successfully Generate a account, please check your DM!")
+      await ctx.respond("Successfully Generated a account, please check your DM!")
       await ctx.author.send(f"""
 **Email:** `{email}`
 **Password:** ||`{password}`||
@@ -189,14 +189,14 @@ async def accountgenerator(ctx):
     else:
       await ctx.respond("Failed to generate account!")
 
-@bot.slash_command(description="Find Active Room on Quizizz.")
+@bot.slash_command(description="Find an active room on Quizizz.")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def roomfinder(ctx):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
-    await ctx.respond("Please wait some seconds to it find the working code!")
+    await ctx.respond("Please wait few seconds so it can found the working code!")
     while True:
       qcode = str(random.randint(100000, 999999))
       response = requests.post(f"https://game.quizizz.com/play-api/v5/checkRoom", json={"roomCode": qcode})
@@ -218,7 +218,7 @@ async def roomfinder(ctx):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     if botamount > 25:
@@ -241,7 +241,7 @@ async def floodroom(ctx, roomcode: str, botamount: int):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
@@ -254,7 +254,7 @@ async def getroominfo(ctx, roomcode: str):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
@@ -274,7 +274,7 @@ async def addplayer(ctx, roomcode: str, playername: str):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def startgame(ctx, roomcode: str):
   if checkBlacklist(str(ctx.author.id)) == True:
-    await ctx.respond("**You're currency in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
@@ -291,7 +291,7 @@ async def startgame(ctx, roomcode: str):
 
 @bot.event
 async def on_ready():
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="{} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help | {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
   print("Logged in as {0.user}".format(bot))
 
 bot.run(os.environ['BOT_TOKEN'])
