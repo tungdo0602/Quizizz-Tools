@@ -84,10 +84,11 @@ async def blacklist(ctx, userid: str):
     return
   else:
     try:
+      print(userid)
       open("blacklist.txt", "a").write(userid + " ")
-      await ctx.respond(f"Blacklisted <@{userid}>", mention_author=False)
+      await ctx.respond(f"Blacklisted `{userid}`")
     except:
-      await ctx.respond(f"Failed to blacklist <@{userid}>")
+      await ctx.respond(f"Failed to blacklist `{userid}`")
 
 @bot.slash_command(description="Clear Blacklist")
 async def clearblacklist(ctx):
