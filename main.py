@@ -291,6 +291,26 @@ async def startgame(ctx, roomcode: str):
       else:
         await ctx.respond("Failed to start the game!")
 
+@bot.slash_command(description="Force End ANY quizizz game.")
+@commands.cooldown(1, 5, type=commands.BucketType.user)
+async def endgame(ctx, roomcode: str):
+  if checkBlacklist(str(ctx.author.id)) == True:
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
+    return
+  else:
+    room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
+    rdata = room.json().get('room')
+    if rdata == None:
+      await ctx.respond("Invaild Room Code!", ephemeral=True)
+    else:
+      roomhash = rdata.get('hash')
+      start = requests.post("https://quizizz.com/_api/main/game/pause", json={"pauseFor": 0,"roomHash": roomhash})
+      if start.status_code == 200:
+        await ctx.respond("Ended the game!")
+      else:
+        await ctx.respond("Failed to end the game!")
+
+
 @bot.event
 async def on_ready():
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help | {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
