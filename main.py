@@ -105,7 +105,7 @@ async def clearblacklist(ctx):
 
 @bot.slash_command(description="Add Powerup to player")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
-async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch"])):
+async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch", "Streak Booster", "Super Sonic", "All"])):
   await ctx.defer()
   if checkBlacklist(str(ctx.author.id)) == True:
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
@@ -130,6 +130,46 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
       raw_powerup = "streak-saver"
     elif powerup.casefold() == "Glitch".casefold():
       raw_powerup = "glitch"
+    elif powerup.casefold() == "Streak Booster".casefold():
+      raw_powerup = "streak-booster"
+    elif powerup.casefold() == "Super Sonic".casefold():
+      raw_powerup = "supersonic"
+    elif powerup.casefold() == "All".casefold():
+      raw_powerup = [
+        {
+          "name": "2x"
+        },
+        {
+          "name": "double-jeopardy"
+        },
+        {
+          "name": "50-50"
+        },
+        {
+          "name": "immunity"
+        },
+        {
+          "name": "time-freeze"
+        },
+        {
+          "name": "power-play"
+        },
+        {
+          "name": "streak-saver"
+        },
+        {
+          "name": "glitch"
+        },
+        {
+          "name": "streak-booster"
+        },
+        {
+          "name": "supersonic"
+        },
+        {
+          "name": "eraser"
+        }
+      ]
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
     if rdata == None:
@@ -139,7 +179,10 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
     else:
       roomhash = rdata.get('hash')
       gtype = rdata.get('type')
-      addpowerup = requests.post('https://game.quizizz.com/play-api/awardPowerup', json={"roomHash": roomhash,"playerId": name,"powerup":{"name": raw_powerup},"gameType": gtype})
+      if powerup.casefold() == "All".casefold():
+        addpowerup = requests.post('https://game.quizizz.com/play-api/awardPowerups', json={"roomHash": roomhash,"playerId": name,"powerups": raw_powerup,"gameType": gtype})
+      else:
+        addpowerup = requests.post('https://game.quizizz.com/play-api/awardPowerup', json={"roomHash": roomhash,"playerId": name,"powerup":{"name": raw_powerup},"gameType": gtype})
       if addpowerup.status_code == 200:
         await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**")
       else:
@@ -268,10 +311,11 @@ async def addplayer(ctx, roomcode: str, playername: str):
       fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
       addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
       if addbot.status_code == 200:
-        await ctx.respond(f"Successfully Added `{playername}` to `{roomcode}`")
+        await ctx.respond(f"Added `{playername}` to `{roomcode}`")
       else:
         await ctx.respond("Failed to add player to room!", ephemeral=True)
-
+        
+"""
 @bot.slash_command(description="Force Start ANY quizizz game.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def startgame(ctx, roomcode: str):
@@ -287,7 +331,7 @@ async def startgame(ctx, roomcode: str):
       roomhash = rdata.get('hash')
       start = requests.post("https://quizizz.com/_api/main/game/start", json={"roomHash": roomhash})
       if start.status_code == 200:
-        await ctx.respond("Successfully started the game!")
+        await ctx.respond("Started the game!")
       else:
         await ctx.respond("Failed to start the game!")
 
@@ -304,12 +348,13 @@ async def endgame(ctx, roomcode: str):
       await ctx.respond("Invaild Room Code!", ephemeral=True)
     else:
       roomhash = rdata.get('hash')
-      start = requests.post("https://quizizz.com/_api/main/game/pause", json={"pauseFor": 0,"roomHash": roomhash})
-      if start.status_code == 200:
+      end = requests.post("https://quizizz.com/_api/main/game/pause", json={"pauseFor": 0,"roomHash": roomhash})
+      if end.status_code == 200:
         await ctx.respond("Ended the game!")
       else:
+        print(end.json())
         await ctx.respond("Failed to end the game!")
-
+"""
 
 @bot.event
 async def on_ready():
