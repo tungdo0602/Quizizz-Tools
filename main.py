@@ -172,7 +172,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
       ]
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
-    if rdata == None:
+    if not rdata:
       await ctx.respond("**Invaild Quizizz Room Code! Make sure you type correct room code.**", ephemeral=True)
     elif rdata.get('powerups') == 'no':
       await ctx.respond("**This quizizz room has disabled powerup!**")
@@ -272,7 +272,7 @@ async def floodroom(ctx, roomcode: str, botamount: int):
     await ctx.respond(f"Adding Bot to room `{roomcode}`")
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
-    if rdata == None:
+    if not rdata:
       await ctx.respond("Invaild Room Code!", ephemeral=True)
     else:
       roomhash = rdata.get('hash')
@@ -290,7 +290,7 @@ async def getroominfo(ctx, roomcode: str):
     return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
-    if room.json().get("room") == None:
+    if not room.json().get("room"):
       await ctx.respond("Invaild Room Code!", ephemeral=True)
     else:
       await ctx.respond(" ", file=discord.File(io.StringIO(str(room.json())), "info.json"))
@@ -304,9 +304,7 @@ async def addplayer(ctx, roomcode: str, playername: str):
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
-    if rdata == None:
-      await ctx.respond("Invaild Room Code!", ephemeral=True)
-    else:
+    if rdata:
       roomhash = rdata.get('hash')
       fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
       addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
@@ -314,6 +312,8 @@ async def addplayer(ctx, roomcode: str, playername: str):
         await ctx.respond(f"Added `{playername}` to `{roomcode}`")
       else:
         await ctx.respond("Failed to add player to room!", ephemeral=True)
+    else:
+      await ctx.respond("Invaild Room Code!", ephemeral=True)
         
 """
 @bot.slash_command(description="Force Start ANY quizizz game.")
