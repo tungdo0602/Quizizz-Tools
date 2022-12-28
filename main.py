@@ -137,37 +137,70 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
     elif powerup.casefold() == "All".casefold():
       raw_powerup = [
         {
-          "name": "2x"
+          "name": "2x",
+          "meta": {
+            "beltPosition": 0,
+          }
         },
         {
-          "name": "double-jeopardy"
+          "name": "double-jeopardy",
+          "meta": {
+            "beltPosition": 1,
+          }
         },
         {
-          "name": "50-50"
+          "name": "50-50",
+          "meta": {
+            "beltPosition": 2,
+          }
         },
         {
-          "name": "immunity"
+          "name": "immunity",
+          "meta": {
+            "beltPosition": 3,
+          }
         },
         {
-          "name": "time-freeze"
+          "name": "time-freeze",
+          "meta": {
+            "beltPosition": 4,
+          }
         },
         {
-          "name": "power-play"
+          "name": "power-play",
+          "meta": {
+            "beltPosition": 5,
+          }
         },
         {
-          "name": "streak-saver"
+          "name": "streak-saver",
+          "meta": {
+            "beltPosition": 6,
+          }
         },
         {
-          "name": "glitch"
+          "name": "glitch",
+          "meta": {
+            "beltPosition": 7,
+          }
         },
         {
-          "name": "streak-booster"
+          "name": "streak-booster",
+          "meta": {
+            "beltPosition": 8,
+          }
         },
         {
-          "name": "supersonic"
+          "name": "supersonic",
+          "meta": {
+            "beltPosition": 9,
+          }
         },
         {
-          "name": "eraser"
+          "name": "eraser",
+          "meta": {
+            "beltPosition": 10,
+          }
         }
       ]
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
