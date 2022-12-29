@@ -69,7 +69,7 @@ async def vote(ctx):
     await ctx.defer()
     embed=discord.Embed(title="Vote Status", color=discord.Color.random())
     embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-    if checkVote(ctx.author.id) == True:
+    if checkVote(ctx.author.id):
         embed.set_footer(text="You have voted today!")
     elif checkVote(ctx.author.id) == False:
         embed.set_footer(text="You haven't vote today!")
@@ -124,9 +124,8 @@ async def clear(ctx):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch", "Streak Booster", "Super Sonic", "All"])):
   await ctx.defer()
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     raw_powerup = ""
     if powerup.casefold() == "Double Jeopardy".casefold():
@@ -241,9 +240,8 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
 @bot.slash_command(description="Give you a working quizizz account.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def accountgenerator(ctx):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     email = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=random.randint(8, 10))) + random.choice(['@gmail.com', '@apple.com', '@microsoft.com', '@outlook.com'])
     password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=12))
@@ -287,9 +285,8 @@ async def accountgenerator(ctx):
 @bot.slash_command(description="Find an active room on Quizizz.")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def roomfinder(ctx):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     await ctx.respond("Please wait few seconds so it can found the working code!")
     while True:
@@ -312,13 +309,11 @@ async def roomfinder(ctx):
 @bot.slash_command(description="Flood a quizizz room with BOT!")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     if botamount > 25:
       await ctx.respond("Please add smaller than 25 bots per command!")
-      return
     await ctx.respond(f"Adding Bot to room `{roomcode}`")
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
@@ -335,9 +330,8 @@ async def floodroom(ctx, roomcode: str, botamount: int):
 @bot.slash_command(description="Export room info")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     if not room.json().get("room"):
@@ -348,9 +342,8 @@ async def getroominfo(ctx, roomcode: str):
 @bot.slash_command(description="Add Player to room")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
@@ -369,9 +362,8 @@ async def addplayer(ctx, roomcode: str, playername: str):
 @bot.slash_command(description="Force Start ANY quizizz game.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def startgame(ctx, roomcode: str):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
@@ -388,9 +380,8 @@ async def startgame(ctx, roomcode: str):
 @bot.slash_command(description="Force End ANY quizizz game.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def endgame(ctx, roomcode: str):
-  if checkBlacklist(str(ctx.author.id)) == True:
+  if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-    return
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
