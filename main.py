@@ -152,8 +152,6 @@ async def clearblacklist(ctx):
       await ctx.respond("Cleared the list!")
     except:
       await ctx.respond("Failed to clear the list!")
-
-#mmb
 """
 
 @bot.slash_command(description="Add Powerup to player")
