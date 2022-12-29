@@ -235,7 +235,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
       if addpowerup.status_code == 200:
         await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**")
       else:
-        await ctx.respond("**Failed to add that powerup, are you write correct name?**")
+        await ctx.respond("**Failed to add that powerup, are you enter the correct name?**")
 
 @bot.slash_command(description="Give you a working quizizz account.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
@@ -274,7 +274,7 @@ async def accountgenerator(ctx):
 }
     account = requests.post("https://quizizz.com/_api/landingPg/user/register", headers=headers, json=payload)
     if account.status_code == 201:
-      await ctx.respond("Successfully Generated a account, please check your DM!")
+      await ctx.respond("Successfully generated a account, please check your DM!")
       await ctx.author.send(f"""
 **Email:** `{email}`
 **Password:** ||`{password}`||
@@ -339,7 +339,7 @@ async def getroominfo(ctx, roomcode: str):
     else:
       await ctx.respond(" ", file=discord.File(io.StringIO(str(room.json())), "info.json"))
 
-@bot.slash_command(description="Add Player to room")
+@bot.slash_command(description="Add player to room")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
   if checkBlacklist(str(ctx.author.id)):
