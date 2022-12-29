@@ -87,7 +87,7 @@ async def add(ctx, userid: str):
       pingchar = ['<', '>', '@', '!']
       userid = ''.join([c for c in userid if c not in pingchar])
       open("blacklist.txt", "a").write(userid + " ")
-      await ctx.respond(f"Addded <@{userid}> to the list!", allowed_mentions=discord.AllowedMentions.none())
+      await ctx.respond(f"Added <@{userid}> to the list!", allowed_mentions=discord.AllowedMentions.none())
     except:
       await ctx.respond(f"Failed to add <@{userid}> to the list!", allowed_mentions=discord.AllowedMentions.none())
 
