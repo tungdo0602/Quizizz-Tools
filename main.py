@@ -81,7 +81,7 @@ async def vote(ctx):
     await ctx.respond(embed=embed)
 
 blacklist = bot.create_group("add", "remove", "clear")
-@blacklist.slash_command(description="Add user to the list")
+@blacklist.command()
 async def add(ctx, userid: str):
   if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
     await ctx.respond("You can't use this command :thinking:")
@@ -95,7 +95,7 @@ async def add(ctx, userid: str):
     except:
       await ctx.respond(f"Failed to blacklist <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
 
-@blacklist.slash_command(description="Remove user from the list")
+@blacklist.command()
 async def remove(ctx, userid: str):
   if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
     await ctx.respond("You can't use this command :thinking:")
@@ -114,7 +114,7 @@ async def remove(ctx, userid: str):
     except:
       await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
 
-@blacklist.slash_command(description="Clear the list")
+@blacklist.command()
 async def clear(ctx):
   if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
     await ctx.respond("You can't use this command :thinking:")
