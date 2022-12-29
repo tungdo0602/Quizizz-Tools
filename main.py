@@ -80,7 +80,7 @@ async def vote(ctx):
         embed.set_footer(text="An error occurred while trying to get the value!")
     await ctx.respond(embed=embed)
 
-blacklist = bot.create_group(name="blacklist", description="Blacklist manager command")
+blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
 async def add(ctx, userid: str):
   if str(ctx.author.id) != "818856266721132564":
