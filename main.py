@@ -8,26 +8,13 @@ import threading
 import requests
 import os
 import string
+from botLib import *
 
 loginmessage = "Login Required for user"
 
 color_code = [0xFFE4E1, 0x00FF7F, 0xD8BFD8, 0xDC143C, 0xFF4500, 0xDEB887, 0xADFF2F, 0x800000, 0x4682B4, 0x006400, 0x808080, 0xA0522D, 0xF08080, 0xC71585, 0xFFB6C1, 0x00CED1]
 
 bot = discord.Bot()
-
-def checkBlacklist(userId):
-    with open("blacklist.txt") as blacklist:
-        if str(userId) in blacklist.read():
-            return True
-        else:
-            return False
-
-def checkVote(userId):
-    check = requests.get("https://top.gg/api/bots/913442195388903467/check?userId={}".format(str(userId)), headers={"Authorization": os.environ['TOPGG_AUTH']})
-    if check.json().get("voted") == 1:
-        return True
-    else:
-        return False
 
 @bot.event
 async def on_application_command_error(ctx, error):
@@ -75,6 +62,53 @@ async def vote(ctx):
         embed.set_footer(text="An error occurred while trying to get the value!")
     await ctx.respond(embed=embed)
 
+blacklist = bot.create_group("add", "remove", "clear")
+@blacklist.command(description="Add user to the list")
+async def add(ctx, userid: str):
+  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+    await ctx.respond("You can't use this command :thinking:")
+    return
+  else:
+    try:
+      pingchar = ['<', '>', '@', '!']
+      userid = ''.join([c for c in userid if c not in pingchar])
+      open("blacklist.txt", "a").write(userid + " ")
+      await ctx.respond(f"Blacklisted <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
+    except:
+      await ctx.respond(f"Failed to blacklist <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
+
+@blacklist.command(description="Remove user from the list")
+async def remove(ctx, userid: str):
+  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+    await ctx.respond("You can't use this command :thinking:")
+    return
+  else:
+    try:
+      pingchar = ['<', '>', '@', '!']
+      userid = ''.join([c for c in userid if c not in pingchar])
+      userids = open("blacklist.txt", "r").read()
+      userids = replaceAll(userids, userid, "")
+      if userids:
+        open("blacklist.txt", "w").write(userid + " ")
+        await ctx.respond(f"Remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+      else:
+        await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+    except:
+      await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+
+@blacklist.command(description="Clear the list")
+async def clear(ctx):
+  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+    await ctx.respond("You can't use this command :thinking:")
+    return
+  else:
+    try:
+      open("blacklist.txt", "w").close()
+      await ctx.respond("Cleared the list!")
+    except:
+      await ctx.respond("Failed to clear the list!")
+
+"""
 @bot.slash_command(description="Blacklist user!")
 async def blacklist(ctx, userid: str):
   if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
@@ -100,6 +134,7 @@ async def clearblacklist(ctx):
       await ctx.respond("Cleared the list!")
     except:
       await ctx.respond("Failed to clear the list!")
+"""
 
 @bot.slash_command(description="Add Powerup to player")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
