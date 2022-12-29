@@ -11,8 +11,6 @@ import string
 
 loginmessage = "Login Required for user"
 
-color_code = [0xFFE4E1, 0x00FF7F, 0xD8BFD8, 0xDC143C, 0xFF4500, 0xDEB887, 0xADFF2F, 0x800000, 0x4682B4, 0x006400, 0x808080, 0xA0522D, 0xF08080, 0xC71585, 0xFFB6C1, 0x00CED1]
-
 bot = discord.Bot()
 
 def checkBlacklist(userId):
@@ -57,20 +55,19 @@ async def help(ctx):
     embed.add_field(name="/addplayer", value="Add player to room.", inline=False)
     embed.add_field(name="/addpowerup", value="Add powerup to player.", inline=False)
     embed.add_field(name="/floodroom", value="Flood quizizz room with bot.", inline=False)
-    embed.add_field(name="/getroominfo", value="Get quizizz room info (raw).", inline=False)
+    embed.add_field(name="/getroominfo", value="Export room info.", inline=False)
     embed.add_field(name="/roomfinder", value="Find a active quizizz room.", inline=False)
-    embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
+    #embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
     embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
     embed.add_field(name="/vote", value="Check if you vote or not.", inline=False)
-    embed.add_field(name="/blacklist", value="Temporary blacklist user from the bot.", inline=False)
-    embed.add_field(name="/clearblacklist", value="Clear the blacklist.", inline=False)
+    embed.add_field(name="/blacklist", value="Blacklist manager", inline=False)
     await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Vote for the bot!")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def vote(ctx):
     await ctx.defer()
-    embed=discord.Embed(title="Vote Status", color=random.choice(color_code))
+    embed=discord.Embed(title="Vote Status", color=discord.Color.random())
     embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
     if checkVote(ctx.author.id) == True:
         embed.set_footer(text="You have voted today!")
@@ -90,9 +87,9 @@ async def add(ctx, userid: str):
       pingchar = ['<', '>', '@', '!']
       userid = ''.join([c for c in userid if c not in pingchar])
       open("blacklist.txt", "a").write(userid + " ")
-      await ctx.respond(f"Blacklisted <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
+      await ctx.respond(f"Addded <@{userid}> to the list!", allowed_mentions=discord.AllowedMentions.none())
     except:
-      await ctx.respond(f"Failed to blacklist <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
+      await ctx.respond(f"Failed to add <@{userid}> to the list!", allowed_mentions=discord.AllowedMentions.none())
 
 @blacklist.command(description="Remove user from the list")
 async def remove(ctx, userid: str):
@@ -122,34 +119,6 @@ async def clear(ctx):
       await ctx.respond("Cleared the list!")
     except:
       await ctx.respond("Failed to clear the list!")
-
-"""
-@bot.slash_command(description="Blacklist user!")
-async def blacklist(ctx, userid: str):
-  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
-    await ctx.respond("You can't use this command :thinking:")
-    return
-  else:
-    try:
-      pingchar = ['<', '>', '@', '!']
-      userid = ''.join([c for c in userid if c not in pingchar])
-      open("blacklist.txt", "a").write(userid + " ")
-      await ctx.respond(f"Blacklisted <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
-    except:
-      await ctx.respond(f"Failed to blacklist <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
-
-@bot.slash_command(description="Clear Blacklist")
-async def clearblacklist(ctx):
-  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
-    await ctx.respond("You can't use this command :thinking:")
-    return
-  else:
-    try:
-      open("blacklist.txt", "w").close()
-      await ctx.respond("Cleared the list!")
-    except:
-      await ctx.respond("Failed to clear the list!")
-"""
 
 @bot.slash_command(description="Add Powerup to player")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
@@ -363,7 +332,7 @@ async def floodroom(ctx, roomcode: str, botamount: int):
         addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": name, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
     await ctx.author.send(f"Successfully Added {i+1} Bots to `{roomcode}`")
 
-@bot.slash_command(description="Get Room Info By Room Code")
+@bot.slash_command(description="Export room info")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
   if checkBlacklist(str(ctx.author.id)) == True:
