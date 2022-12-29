@@ -80,7 +80,7 @@ async def vote(ctx):
         embed.set_footer(text="An error occurred while trying to get the value!")
     await ctx.respond(embed=embed)
 
-blacklist = discord.create_group("add", "remove", "clear")
+blacklist = bot.create_group("add", "remove", "clear")
 @blacklist.slash_command(description="Add user to the list")
 async def add(ctx, userid: str):
   if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
