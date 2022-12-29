@@ -81,11 +81,10 @@ async def vote(ctx):
     await ctx.respond(embed=embed)
 
 blacklist = bot.create_group("add", "remove", "clear")
-@blacklist.command()
+@blacklist.command(description="Add user to the list")
 async def add(ctx, userid: str):
-  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+  if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
-    return
   else:
     try:
       pingchar = ['<', '>', '@', '!']
@@ -95,11 +94,10 @@ async def add(ctx, userid: str):
     except:
       await ctx.respond(f"Failed to blacklist <@{userid}>", allowed_mentions=discord.AllowedMentions.none())
 
-@blacklist.command()
+@blacklist.command(description="Remove user from the list")
 async def remove(ctx, userid: str):
-  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+  if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
-    return
   else:
     try:
       pingchar = ['<', '>', '@', '!']
@@ -114,11 +112,10 @@ async def remove(ctx, userid: str):
     except:
       await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
 
-@blacklist.command()
+@blacklist.command(description="Clear the list")
 async def clear(ctx):
-  if ctx.author.id != "818856266721132564" and ctx.author.id != 818856266721132564:
+  if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
-    return
   else:
     try:
       open("blacklist.txt", "w").close()
@@ -445,4 +442,5 @@ async def on_ready():
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help | {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
   print("Logged in as {0.user}".format(bot))
 
+bot.add_application_command(blacklist)
 bot.run(os.environ['BOT_TOKEN'])
