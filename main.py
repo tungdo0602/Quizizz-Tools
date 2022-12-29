@@ -106,11 +106,11 @@ async def remove(ctx, userid: str):
       userids = replaceAll(userids, userid, "")
       if userids:
         open("blacklist.txt", "w").write(userid + " ")
-        await ctx.respond(f"Remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+        await ctx.respond(f"Remove <@{userid}> from the list!", allowed_mentions=discord.AllowedMentions.none())
       else:
-        await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+        await ctx.respond(f"<@{userid}> isn't in the list!", allowed_mentions=discord.AllowedMentions.none())
     except:
-      await ctx.respond(f"Failed to remove <@{userid}> from the list.", allowed_mentions=discord.AllowedMentions.none())
+      await ctx.respond(f"Failed to remove <@{userid}> from the list!", allowed_mentions=discord.AllowedMentions.none())
 
 @blacklist.command()
 async def clear(ctx):
