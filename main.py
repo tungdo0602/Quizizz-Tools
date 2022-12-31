@@ -248,7 +248,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
         await ctx.respond("**Failed to add that powerup, are you enter the correct name?**")
 
 @bot.slash_command(description="Give you a working quizizz account.")
-@commands.cooldown(1, 5, type=commands.BucketType.user)
+@commands.cooldown(1, 60, type=commands.BucketType.user)
 async def accountgenerator(ctx):
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
@@ -293,7 +293,7 @@ async def accountgenerator(ctx):
       await ctx.respond("Failed to generate account!")
 
 @bot.slash_command(description="Find an active room on Quizizz.")
-@commands.cooldown(1, 10, type=commands.BucketType.user)
+@commands.cooldown(1, 30, type=commands.BucketType.user)
 async def roomfinder(ctx):
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
@@ -317,7 +317,7 @@ async def roomfinder(ctx):
         break
 
 @bot.slash_command(description="Flood a quizizz room with BOT!")
-@commands.cooldown(1, 5, type=commands.BucketType.user)
+@commands.cooldown(1, 10, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
@@ -350,7 +350,7 @@ async def getroominfo(ctx, roomcode: str):
       await ctx.respond(" ", file=discord.File(io.StringIO(str(room.json())), "info.json"))
 
 @bot.slash_command(description="Add player to room")
-@commands.cooldown(1, 5, type=commands.BucketType.user)
+@commands.cooldown(1, 10, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
