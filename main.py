@@ -99,8 +99,7 @@ async def remove(ctx, userid: str):
     try:
       pingchar = ['<', '>', '@', '!']
       userid = ''.join([c for c in userid if c not in pingchar])
-      userids = open("blacklist.txt", "r").read()
-      userids = replaceAll(userids, userid, "")
+      userids = replaceAll(open("blacklist.txt", "r").read(), userid, "")
       if userids:
         open("blacklist.txt", "w").write(userid + " ")
         await ctx.respond(f"Remove <@{userid}> from the list!", allowed_mentions=discord.AllowedMentions.none())
@@ -119,6 +118,17 @@ async def clear(ctx):
       await ctx.respond("Cleared the list!")
     except:
       await ctx.respond("Failed to clear the list!")
+
+@blacklist.command(description="View the list")
+async def view(ctx):
+  if str(ctx.author.id) != "818856266721132564":
+    await ctx.respond("You can't use this command :thinking:")
+  else:
+    try:
+      users = open("blacklist.txt", "r").read()
+      await ctx.respond(" ", file=discord.File(io.StringIO(str(users)), "ids.txt"))
+    except:
+      await ctx.repsond("Failed to get the list!")
 
 @bot.slash_command(description="Add Powerup to player")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
