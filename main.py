@@ -35,7 +35,6 @@ def replaceAll(str, char, rechar):
 
 @bot.event
 async def on_application_command_error(ctx, error):
-    print(error)
     if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
         await ctx.respond("**You can use this command <t:{}:R>**".format(int(time.time() + error.retry_after)))
     else:
