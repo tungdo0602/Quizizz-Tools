@@ -9,6 +9,8 @@ import requests
 import os
 import string
 import time
+import datetime
+from datetime import datetime
 
 loginmessage = "Login Required for user"
 
@@ -43,24 +45,32 @@ async def on_application_command_error(ctx, error):
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
   await ctx.defer()
-  await ctx.respond("Pong! `{} ms`".format(bot.latency))
+  embed=discord.Embed(title=" ", color=discord.Color.random())
+  embed.set_author(name="Pong!")
+  embed.add_field(name="Latency", value="`{}`".format(bot.latency), inline=True)
+  embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
+  embed.set_footer(text=str(datetime.now()))
+  await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
     await ctx.defer()
     embed=discord.Embed()
-    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.webp?size=160")
+    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
     embed.add_field(name="__**Main Commands**__", value="\u200b", inline=False)
-    embed.add_field(name="/accountgenerator", value="Generate real quizizz account.", inline=False)
-    embed.add_field(name="/addplayer", value="Add player to room.", inline=False)
-    embed.add_field(name="/addpowerup", value="Add powerup to player.", inline=False)
-    embed.add_field(name="/floodroom", value="Flood quizizz room with bot.", inline=False)
-    embed.add_field(name="/getroominfo", value="Export room info.", inline=False)
-    embed.add_field(name="/roomfinder", value="Find a active quizizz room.", inline=False)
+    embed.add_field(name="</accountgenerator:948197452685672508>", value="Generate quizizz account.", inline=False)
+    embed.add_field(name="</addplayer:950656396444172338>", value="Add player to room.", inline=False)
+    embed.add_field(name="</addpowerup:928500685102776352>", value="Add powerup to player.", inline=False)
+    embed.add_field(name="</floodroom:928500685102776354>", value="Flood Quizizz room with bot.", inline=False)
+    embed.add_field(name="</getroominfo:958753737600536616>", value="Export room info.", inline=False)
+    embed.add_field(name="</roomfinder:928500685102776353>", value="Find a active Quizizz room.", inline=False)
     #embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
+    #embed.add_field(name="/endgame", value="Force end any quizizz room.", inline=False)
     embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
-    embed.add_field(name="/vote", value="Check if you vote or not.", inline=False)
-    embed.add_field(name="/blacklist", value="Blacklist manager", inline=False)
+    embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
+    embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
+    embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
+    embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
     await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Vote for the bot!")
@@ -316,7 +326,7 @@ async def roomfinder(ctx):
       """)
         break
 
-@bot.slash_command(description="Flood a quizizz room with BOT!")
+@bot.slash_command(description="Flood a Quizizz room with bots  !")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
   if checkBlacklist(str(ctx.author.id)):
