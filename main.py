@@ -244,7 +244,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
     if not rdata:
       await ctx.respond("**Invaild Quizizz Room Code! Make sure you type correct room code.**", ephemeral=True)
     elif rdata.get('powerups') == 'no':
-      await ctx.respond("**This quizizz room has disabled powerup!**")
+      await ctx.respond("**This quizizz room has disabled powerup!**", ephemeral=True)
     else:
       roomhash = rdata.get('hash')
       gtype = rdata.get('type')
@@ -253,9 +253,9 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
       else:
         addpowerup = requests.post('https://game.quizizz.com/play-api/awardPowerup', json={"roomHash": roomhash,"playerId": name,"powerup":{"name": raw_powerup},"gameType": gtype})
       if addpowerup.status_code == 200:
-        await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**")
+        await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**", ephemeral=True)
       else:
-        await ctx.respond("**Failed to add that powerup, are you enter the correct name?**")
+        await ctx.respond("**Failed to add that powerup, are you enter the correct name?**", ephemeral=True)
 
 @bot.slash_command(description="Give you a working quizizz account.")
 @commands.cooldown(1, 60, type=commands.BucketType.user)
@@ -326,7 +326,7 @@ async def roomfinder(ctx):
       """)
         break
 
-@bot.slash_command(description="Flood a Quizizz room with bots  !")
+@bot.slash_command(description="Flood a Quizizz room with bots!")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
   if checkBlacklist(str(ctx.author.id)):
@@ -372,7 +372,7 @@ async def addplayer(ctx, roomcode: str, playername: str):
       fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
       addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
       if addbot.status_code == 200:
-        await ctx.respond(f"Added `{playername}` to `{roomcode}`")
+        await ctx.respond(f"Added `{playername}` to `{roomcode}`", ephemeral=True)
       else:
         await ctx.respond("Failed to add player to room!", ephemeral=True)
     else:
