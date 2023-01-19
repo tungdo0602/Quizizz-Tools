@@ -91,7 +91,6 @@ async def vote(ctx):
 @bot.slash_command(description="Invite Stuffs")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def invites(ctx):
-    await ctx.defer()
     embed=discord.Embed(title=" ", color=discord.Color.random())
     embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
     embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
