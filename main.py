@@ -81,32 +81,21 @@ class helpObject(discord.ui.View):
     global helpPage
     helpPage += 1
     await interaction.response.edit_message(embed=createEmbedFromJson(helpPage))
-
+    
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
-  await ctx.respond(embed=createHelpPage(), view=helpObject())
+  await ctx.defer()
+  embed = discord.Embed(title=" ", color=discord.Color.random())
+  embed.set_author(name="Pong!")
+  embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
+  embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
+  embed.set_footer(text=str(datetime.now()))
+  await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
   await ctx.defer()
-  embed = discord.Embed()
-  embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
-  embed.add_field(name="__**Main Commands**__", value="\u200b", inline=False)
-  embed.add_field(name="</accountgenerator:948197452685672508>", value="Generate quizizz account.", inline=False)
-  embed.add_field(name="</addplayer:950656396444172338>", value="Add player to room.", inline=False)
-  embed.add_field(name="</addpowerup:928500685102776352>", value="Add powerup to player.", inline=False)
-  embed.add_field(name="</floodroom:928500685102776354>", value="Flood Quizizz room with bot.", inline=False)
-  embed.add_field(name="</getroominfo:958753737600536616>", value="Export room info.", inline=False)
-  embed.add_field(name="</roomfinder:928500685102776353>", value="Find a active Quizizz room.", inline=False)
-  #embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
-  #embed.add_field(name="/endgame", value="Force end any quizizz room.", inline=False)
-  embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
-  embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
-  embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
-  embed.add_field(name="</invites:1065500914183569470>", value="Invite stuffs", inline=False)
-  embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
-  embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
-  await ctx.respond(embed=embed)
+  await ctx.respond(embed=createHelpPage(), view=helpObject())
 
 @bot.slash_command(description="Vote for the bot!")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
