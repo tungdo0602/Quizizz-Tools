@@ -74,13 +74,13 @@ class helpObject(discord.ui.View):
   async def pre_callback(self, button, interaction):
     global helpPage
     helpPage -= 1
-    await interaction.response.edit_message(embed=createEmbedFromJson(helpPage))
+    await interaction.response.edit_message(embed=createHelpPage(helpPage))
     
   @discord.ui.button(label=">", style=discord.ButtonStyle.green)
   async def next_callback(self, button, interaction):
     global helpPage
     helpPage += 1
-    await interaction.response.edit_message(embed=createEmbedFromJson(helpPage))
+    await interaction.response.edit_message(embed=createHelpPage(helpPage))
     
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
