@@ -17,30 +17,30 @@ loginmessage = "Login Required for user"
 bot = discord.Bot()
 
 def checkBlacklist(userId):
-    with open("blacklist.txt") as blacklist:
-        if str(userId) in blacklist.read():
-            return True
-        else:
-            return False
+  with open("blacklist.txt") as blacklist:
+      if str(userId) in blacklist.read():
+          return True
+      else:
+          return False
 
 def checkVote(userId):
-    check = requests.get("https://top.gg/api/bots/913442195388903467/check?userId={}".format(str(userId)), headers={"Authorization": os.environ['TOPGG_AUTH']})
-    if check.json().get("voted") == 1:
-        return True
-    else:
-        return False
+  check = requests.get("https://top.gg/api/bots/913442195388903467/check?userId={}".format(str(userId)), headers={"Authorization": os.environ['TOPGG_AUTH']})
+  if check.json().get("voted") == 1:
+      return True
+  else:
+      return False
 
 def replaceAll(str, char, rechar):
-    newstr = str.replace(char, rechar)
-    if newstr == str: return False
-    else: return newstr
+  newstr = str.replace(char, rechar)
+  if newstr == str: return False
+  else: return newstr
 
 @bot.event
 async def on_application_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-        await ctx.respond("**You can use this command <t:{}:R>**".format(int(time.time() + error.retry_after)))
-    else:
-        await ctx.respond("**Unknown Error!**")
+  if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+      await ctx.respond("**You can use this command <t:{}:R>**".format(int(time.time() + error.retry_after)))
+  else:
+      await ctx.respond("**Unknown Error!**")
 
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
@@ -54,53 +54,55 @@ async def ping(ctx):
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
-    await ctx.defer()
-    embed=discord.Embed()
-    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
-    embed.add_field(name="__**Main Commands**__", value="\u200b", inline=False)
-    embed.add_field(name="</accountgenerator:948197452685672508>", value="Generate quizizz account.", inline=False)
-    embed.add_field(name="</addplayer:950656396444172338>", value="Add player to room.", inline=False)
-    embed.add_field(name="</addpowerup:928500685102776352>", value="Add powerup to player.", inline=False)
-    embed.add_field(name="</floodroom:928500685102776354>", value="Flood Quizizz room with bot.", inline=False)
-    embed.add_field(name="</getroominfo:958753737600536616>", value="Export room info.", inline=False)
-    embed.add_field(name="</roomfinder:928500685102776353>", value="Find a active Quizizz room.", inline=False)
-    #embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
-    #embed.add_field(name="/endgame", value="Force end any quizizz room.", inline=False)
-    embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
-    embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
-    embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
-    embed.add_field(name="</invites:1065500914183569470>", value="Invite stuffs", inline=False)
-    embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
-    embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
-    await ctx.respond(embed=embed)
+  await ctx.defer()
+  embed=discord.Embed()
+  embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
+  embed.add_field(name="__**Main Commands**__", value="\u200b", inline=False)
+  embed.add_field(name="</accountgenerator:948197452685672508>", value="Generate quizizz account.", inline=False)
+  embed.add_field(name="</addplayer:950656396444172338>", value="Add player to room.", inline=False)
+  embed.add_field(name="</addpowerup:928500685102776352>", value="Add powerup to player.", inline=False)
+  embed.add_field(name="</floodroom:928500685102776354>", value="Flood Quizizz room with bot.", inline=False)
+  embed.add_field(name="</getroominfo:958753737600536616>", value="Export room info.", inline=False)
+  embed.add_field(name="</roomfinder:928500685102776353>", value="Find a active Quizizz room.", inline=False)
+  #embed.add_field(name="/startgame", value="Force start any quizizz room.", inline=False)
+  #embed.add_field(name="/endgame", value="Force end any quizizz room.", inline=False)
+  embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
+  embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
+  embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
+  embed.add_field(name="</invites:1065500914183569470>", value="Invite stuffs", inline=False)
+  embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
+  embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
+  await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Vote for the bot!")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def vote(ctx):
-    await ctx.defer()
-    embed=discord.Embed(title="Vote Status", color=discord.Color.random())
-    embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-    if checkVote(ctx.author.id):
-        embed.set_footer(text="You have voted today!")
-    elif checkVote(ctx.author.id) == False:
-        embed.set_footer(text="You haven't vote today!")
-    else:
-        embed.set_footer(text="An error occurred while trying to get the value!")
-    await ctx.respond(embed=embed)
+  await ctx.defer()
+  embed=discord.Embed(title="Vote Status", color=discord.Color.random())
+  embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
+  if checkVote(ctx.author.id):
+      embed.set_footer(text="You have voted today!")
+  elif checkVote(ctx.author.id) == False:
+      embed.set_footer(text="You haven't vote today!")
+  else:
+      embed.set_footer(text="An error occurred while trying to get the value!")
+  await ctx.respond(embed=embed)
 
 @bot.slash_command(description="Invite Stuffs")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def invites(ctx):
-    embed=discord.Embed(title=" ", color=discord.Color.random())
-    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
-    embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
-    embed.add_field(name="Discord Server", value="[Click me](https://discord.gg/YsT8rE2vqP)", inline=True)
-    embed.set_footer(text="Invite information")
-    await ctx.respond(embed=embed)
+  await ctx.defer()
+  embed=discord.Embed(title=" ", color=discord.Color.random())
+  embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
+  embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
+  embed.add_field(name="Discord Server", value="[Click me](https://discord.gg/YsT8rE2vqP)", inline=True)
+  embed.set_footer(text="Invite information")
+  await ctx.respond(embed=embed)
 
 blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
 async def add(ctx, userid: str):
+  await ctx.defer()
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -114,6 +116,7 @@ async def add(ctx, userid: str):
 
 @blacklist.command(description="Remove user from the list")
 async def remove(ctx, userid: str):
+  await ctx.defer()
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -131,6 +134,7 @@ async def remove(ctx, userid: str):
 
 @blacklist.command(description="Clear the list")
 async def clear(ctx):
+  await ctx.defer()
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -142,6 +146,7 @@ async def clear(ctx):
 
 @blacklist.command(description="View the list")
 async def view(ctx):
+  await ctx.defer()
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -271,6 +276,7 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
 @bot.slash_command(description="Give you a working quizizz account.")
 @commands.cooldown(1, 60, type=commands.BucketType.user)
 async def accountgenerator(ctx):
+  await ctx.defer()
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -316,6 +322,7 @@ async def accountgenerator(ctx):
 @bot.slash_command(description="Find an active room on Quizizz.")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def roomfinder(ctx):
+  await ctx.defer()
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -340,6 +347,7 @@ async def roomfinder(ctx):
 @bot.slash_command(description="Flood a Quizizz room with bots!")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
+  await ctx.defer()
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -361,6 +369,7 @@ async def floodroom(ctx, roomcode: str, botamount: int):
 @bot.slash_command(description="Export room info")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
+  await ctx.defer()
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -373,6 +382,7 @@ async def getroominfo(ctx, roomcode: str):
 @bot.slash_command(description="Add player to room")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
+  await ctx.defer()
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
