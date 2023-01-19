@@ -69,7 +69,7 @@ async def help(ctx):
     embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
     embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
     embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
-    embed.add_field(name="</invite:1065500914183569470>", value="Invite stuffs", inline=False)
+    embed.add_field(name="</invites:1065500914183569470>", value="Invite stuffs", inline=False)
     embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
     embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
     await ctx.respond(embed=embed)
