@@ -69,6 +69,7 @@ async def help(ctx):
     embed.add_field(name="__**Other Commands**__", value="\u200b", inline=False)
     embed.add_field(name="</vote:960884315477123163>", value="Vote for the bot", inline=False)
     embed.add_field(name="</help:963096500848697384>", value="Show help.", inline=False)
+    embed.add_field(name="</invite:963096500848697384>", value="Invite stuffs", inline=False)
     embed.add_field(name="</ping:981358400568975440>", value="Pong!", inline=False)
     embed.add_field(name="</blacklist:1057979972515545099>", value="Blacklist manager", inline=False)
     await ctx.respond(embed=embed)
@@ -89,7 +90,7 @@ async def vote(ctx):
 
 @bot.slash_command(description="Invite Stuffs")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
-async def invite(ctx):
+async def invites(ctx):
     await ctx.defer()
     embed=discord.Embed(title="Invite Information", color=discord.Color.random())
     embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
