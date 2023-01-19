@@ -1,10 +1,8 @@
 import discord
 import io
 from discord.ext import commands
-from discord.commands import Option
-from discord.commands import permissions
+from discord.commands import Option, permissions
 import random
-import threading
 import requests
 import os
 import string
@@ -42,20 +40,56 @@ async def on_application_command_error(ctx, error):
   else:
       await ctx.respond("**Unknown Error!**")
 
+def createHelpPage(pageNum=0):
+  helpData = {
+    "Cheat Commands": {
+      "</accountgenerator:948197452685672508>": "Generate quizizz account.",
+      "</addplayer:950656396444172338>": "Add player to room.",
+      "</addpowerup:928500685102776352>": "Add powerup to player.",
+      "</floodroom:928500685102776354>": "Flood Quizizz room with bot.",
+      "</getroominfo:958753737600536616>": "Export room info.",
+      "</roomfinder:928500685102776353>": "Find a active Quizizz room."
+    },
+    "Other Commands": {
+      "</vote:960884315477123163>": "Vote for the bot.",
+      "</help:963096500848697384>": "Show help.",
+      "</invites:1065500914183569470>": "Invite stuffs.",
+      "</ping:981358400568975440>": "Pong!",
+      "</blacklist:1057979972515545099>": "Blacklist manager."
+    }
+  }
+  pageNum = pageNum % len(list(helpData))
+  title = list(helpData)[pageNum]
+  embed = discord.Embed(title=title)
+  for i in list(helpData[title]):
+    embed.add_field(name=i, value=helpData[title][i], inline=False)
+  embed.set_footer(text=f"Page {pageNum+1} of {len(list(helpData))}")
+  return embed
+
+helpPage = 0
+
+class helpObject(discord.ui.View):
+  
+  @discord.ui.button(label="<", style=discord.ButtonStyle.green)
+  async def pre_callback(self, button, interaction):
+    global helpPage
+    helpPage -= 1
+    await interaction.response.edit_message(embed=createEmbedFromJson(helpPage))
+    
+  @discord.ui.button(label=">", style=discord.ButtonStyle.green)
+  async def next_callback(self, button, interaction):
+    global helpPage
+    helpPage += 1
+    await interaction.response.edit_message(embed=createEmbedFromJson(helpPage))
+
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
-  await ctx.defer()
-  embed=discord.Embed(title=" ", color=discord.Color.random())
-  embed.set_author(name="Pong!")
-  embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
-  embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
-  embed.set_footer(text=str(datetime.now()))
-  await ctx.respond(embed=embed)
+  await ctx.respond(embed=createHelpPage(), view=helpObject())
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
   await ctx.defer()
-  embed=discord.Embed()
+  embed = discord.Embed()
   embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
   embed.add_field(name="__**Main Commands**__", value="\u200b", inline=False)
   embed.add_field(name="</accountgenerator:948197452685672508>", value="Generate quizizz account.", inline=False)
@@ -78,7 +112,7 @@ async def help(ctx):
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def vote(ctx):
   await ctx.defer()
-  embed=discord.Embed(title="Vote Status", color=discord.Color.random())
+  embed = discord.Embed(title="Vote Status", color=discord.Color.random())
   embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
   if checkVote(ctx.author.id):
       embed.set_footer(text="You have voted today!")
@@ -92,7 +126,7 @@ async def vote(ctx):
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def invites(ctx):
   await ctx.defer()
-  embed=discord.Embed(title=" ", color=discord.Color.random())
+  embed = discord.Embed(title=" ", color=discord.Color.random())
   embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
   embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
   embed.add_field(name="Discord Server", value="[Click me](https://discord.gg/YsT8rE2vqP)", inline=True)
