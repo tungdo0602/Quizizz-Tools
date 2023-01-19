@@ -87,6 +87,16 @@ async def vote(ctx):
         embed.set_footer(text="An error occurred while trying to get the value!")
     await ctx.respond(embed=embed)
 
+@bot.slash_command(description="Invite Stuffs")
+@commands.cooldown(1, 5, type=commands.BucketType.user)
+async def invite(ctx):
+    await ctx.defer()
+    embed=discord.Embed(title="Invite Information", color=discord.Color.random())
+    embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
+    embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
+    embed.add_field(name="Discord Server", value="[Click me](https://discord.gg/YsT8rE2vqP)", inline=True)
+    await ctx.respond(embed=embed)
+
 blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
 async def add(ctx, userid: str):
