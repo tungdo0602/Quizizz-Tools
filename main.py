@@ -75,7 +75,7 @@ class helpObject(discord.ui.View):
   
   async def interaction_check(self, interaction) -> bool:
     if interaction.user != self.author:
-      await interaction.response.send_message("This is not for you!", emphemeral=True)
+      await interaction.response.send_message("This is not for you!", ephemeral=True)
       return False
     else:
       return True
