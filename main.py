@@ -69,7 +69,7 @@ def createHelpPage(pageNum=0):
 class helpObject(discord.ui.View):
   
   def __init__(self, author: discord.User):
-    super().__init__()
+    super().__init__(timeout=60)
     self.currentPage = 0
     self.author = author
   
