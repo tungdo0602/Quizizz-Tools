@@ -197,7 +197,7 @@ async def view(ctx):
 @bot.slash_command(description="Add Powerup to player")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose the powerup", choices=["Double Jeopardy", "X2", "50-50", "Eraser", "Immunity", "Time Freeze", "Power Play", "Streak Saver", "Glitch", "Streak Booster", "Super Sonic", "All"])):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -296,9 +296,9 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
     if not rdata:
-      await ctx.respond("**Invaild Quizizz Room Code! Make sure you type correct room code.**", ephemeral=True)
+      await ctx.respond("**Invaild Quizizz Room Code! Make sure you type correct room code.**")
     elif rdata.get('powerups') == 'no':
-      await ctx.respond("**This quizizz room has disabled powerup!**", ephemeral=True)
+      await ctx.respond("**This quizizz room has disabled powerup!**")
     else:
       roomhash = rdata.get('hash')
       gtype = rdata.get('type')
@@ -307,14 +307,14 @@ async def addpowerup(ctx, roomcode: str, name: str, powerup: Option(str, "Choose
       else:
         addpowerup = requests.post('https://game.quizizz.com/play-api/awardPowerup', json={"roomHash": roomhash,"playerId": name,"powerup":{"name": raw_powerup},"gameType": gtype})
       if addpowerup.status_code == 200:
-        await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**", ephemeral=True)
+        await ctx.respond(f"**Successfully Added that Powerup to `{name}`. If you don't see the powerup, reload the page.**")
       else:
-        await ctx.respond("**Failed to add that powerup, are you enter the correct name?**", ephemeral=True)
+        await ctx.respond("**Failed to add that powerup, are you enter the correct name?**")
 
 @bot.slash_command(description="Give you a working quizizz account.")
 @commands.cooldown(1, 60, type=commands.BucketType.user)
 async def accountgenerator(ctx):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -349,8 +349,7 @@ async def accountgenerator(ctx):
 }
     account = requests.post("https://quizizz.com/_api/landingPg/user/register", headers=headers, json=payload)
     if account.status_code == 201:
-      await ctx.respond("Successfully generated a account, please check your DM!")
-      await ctx.author.send(f"""
+      await ctx.respond(f"""
 **Email:** `{email}`
 **Password:** ||`{password}`||
 """)
@@ -360,7 +359,7 @@ async def accountgenerator(ctx):
 @bot.slash_command(description="Find an active room on Quizizz.")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
 async def roomfinder(ctx):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -385,42 +384,43 @@ async def roomfinder(ctx):
 @bot.slash_command(description="Flood a Quizizz room with bots!")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def floodroom(ctx, roomcode: str, botamount: int):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
     if botamount > 25:
       await ctx.respond("Please add smaller than 25 bots per command!")
-    await ctx.respond(f"Adding Bot to room `{roomcode}`")
-    room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
-    rdata = room.json().get('room')
-    if not rdata:
-      await ctx.respond("Invaild Room Code!", ephemeral=True)
     else:
-      roomhash = rdata.get('hash')
-      for i in range(botamount):
-        fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
-        name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-        addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": name, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
-    await ctx.author.send(f"Successfully Added {i+1} Bots to `{roomcode}`")
+      #await ctx.respond(f"Adding Bot to room `{roomcode}`")
+      room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
+      rdata = room.json().get('room')
+      if not rdata:
+        await ctx.respond("Invaild Room Code!")
+      else:
+        roomhash = rdata.get('hash')
+        for i in range(botamount):
+          fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
+          name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+          addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": name, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
+        await ctx.respond(f"Successfully Added {i+1} Bots to `{roomcode}`")
 
 @bot.slash_command(description="Export room info")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
-    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**", ephemeral=True)
   else:
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     if not room.json().get("room"):
-      await ctx.respond("Invaild Room Code!", ephemeral=True)
+      await ctx.respond("Invaild Room Code!")
     else:
       await ctx.respond(" ", file=discord.File(io.StringIO(str(room.json())), "info.json"))
 
 @bot.slash_command(description="Add player to room")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
 async def addplayer(ctx, roomcode: str, playername: str):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
   else:
@@ -431,11 +431,11 @@ async def addplayer(ctx, roomcode: str, playername: str):
       fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
       addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
       if addbot.status_code == 200:
-        await ctx.respond(f"Added `{playername}` to `{roomcode}`", ephemeral=True)
+        await ctx.respond(f"Added `{playername}` to `{roomcode}`")
       else:
-        await ctx.respond("Failed to add player to room!", ephemeral=True)
+        await ctx.respond("Failed to add player to room!")
     else:
-      await ctx.respond("Invaild Room Code!", ephemeral=True)
+      await ctx.respond("Invaild Room Code!")
         
 """
 @bot.slash_command(description="Force Start ANY quizizz game.")
