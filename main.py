@@ -83,7 +83,7 @@ class helpObject(discord.ui.View):
   async def on_timeout(self):
     for i in self.children:
       i.disabled = True
-    embed = createHelpPage(self.helpPage)
+    embed = createHelpPage(self.currentPage)
     embed.set_footer(text="Timeout exceeded!")
     await self.message.edit(embed=embed, view=self)
   
