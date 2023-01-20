@@ -66,21 +66,21 @@ def createHelpPage(pageNum=0):
   embed.set_footer(text=f"Page {pageNum+1} of {len(list(helpData))}")
   return embed
 
-helpPage = 0
-
 class helpObject(discord.ui.View):
+  
+  def __init__(self):
+    super().__init__()
+    self.currentPage = 0
   
   @discord.ui.button(label="<", style=discord.ButtonStyle.green)
   async def pre_callback(self, button, interaction):
-    global helpPage
-    helpPage -= 1
-    await interaction.response.edit_message(embed=createHelpPage(helpPage))
+    self.currentPage -= 1
+    await interaction.response.edit_message(embed=createHelpPage(self.currentPage))
     
   @discord.ui.button(label=">", style=discord.ButtonStyle.green)
   async def next_callback(self, button, interaction):
-    global helpPage
-    helpPage += 1
-    await interaction.response.edit_message(embed=createHelpPage(helpPage))
+    self.currentPage += 1
+    await interaction.response.edit_message(embed=createHelpPage(self.currentPage))
     
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
@@ -94,8 +94,6 @@ async def ping(ctx):
 
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
-  global helpPage
-  helpPage = 0
   await ctx.defer()
   await ctx.respond(embed=createHelpPage(), view=helpObject())
 
