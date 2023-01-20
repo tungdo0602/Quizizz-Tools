@@ -68,10 +68,11 @@ def createHelpPage(pageNum=0):
 
 class helpObject(discord.ui.View):
   
-  def __init__(self, author: discord.User):
-    super().__init__(timeout=60)
+  def __init__(self, author: discord.User, alt_res: discord.InteractionResponse):
+    super().__init__(timeout=120)
     self.currentPage = 0
     self.author = author
+    self.alt_res = alt_res
   
   async def interaction_check(self, interaction) -> bool:
     if interaction.user != self.author:
@@ -85,7 +86,8 @@ class helpObject(discord.ui.View):
       i.disabled = True
     embed = createHelpPage(self.currentPage)
     embed.set_footer(text="Timeout exceeded!")
-    await self.message.edit(embed=embed, view=self)
+    sentmsg = self.message or self.alt_res
+    await sentmsg.edit(embed=embed, view=self)
   
   @discord.ui.button(label="<", style=discord.ButtonStyle.green)
   async def pre_callback(self, button, interaction):
@@ -100,7 +102,7 @@ class helpObject(discord.ui.View):
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
   await ctx.defer()
-  await ctx.respond(embed=createHelpPage(), view=helpObject(author=ctx.author))    
+  await ctx.respond(embed=createHelpPage(), view=helpObject(author=ctx.author, alt_res=ctx))    
 
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
