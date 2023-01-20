@@ -95,7 +95,7 @@ async def ping(ctx):
 @bot.slash_command(description="Show list of commands")
 async def help(ctx):
   global ping
-  ping = 0
+  ping = 1
   await ctx.defer()
   await ctx.respond(embed=createHelpPage(), view=helpObject())
 
