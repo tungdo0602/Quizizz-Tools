@@ -68,9 +68,24 @@ def createHelpPage(pageNum=0):
 
 class helpObject(discord.ui.View):
   
-  def __init__(self):
+  def __init__(self, author: discord.User):
     super().__init__()
     self.currentPage = 0
+    self.author = author
+  
+  async def interaction_check(self, interaction) -> bool:
+    if interaction.user != self.author:
+      await interaction.response.send_message("This is not for you!", emphemeral=True)
+      return False
+    else:
+      return True
+  
+  async def on_timeout(self):
+    for i in self.children:
+      i.disabled = True
+    embed = createEmbedFromJson(self.helpPage)
+    embed.set_footer(text="Timeout exceeded!")
+    await self.message.edit(embed=embed, view=self)
   
   @discord.ui.button(label="<", style=discord.ButtonStyle.green)
   async def pre_callback(self, button, interaction):
@@ -82,6 +97,11 @@ class helpObject(discord.ui.View):
     self.currentPage += 1
     await interaction.response.edit_message(embed=createHelpPage(self.currentPage))
     
+@bot.slash_command(description="Show list of commands")
+async def help(ctx):
+  await ctx.defer()
+  await ctx.respond(embed=createHelpPage(), view=helpObject(author=ctx.author))    
+
 @bot.slash_command(description="Pong!")
 async def ping(ctx):
   await ctx.defer()
@@ -91,11 +111,6 @@ async def ping(ctx):
   embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
   embed.set_footer(text=str(datetime.now()))
   await ctx.respond(embed=embed)
-
-@bot.slash_command(description="Show list of commands")
-async def help(ctx):
-  await ctx.defer()
-  await ctx.respond(embed=createHelpPage(), view=helpObject())
 
 @bot.slash_command(description="Vote for the bot!")
 @commands.cooldown(1, 30, type=commands.BucketType.user)
