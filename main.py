@@ -12,7 +12,10 @@ from datetime import datetime
 
 loginmessage = "Login Required for user"
 
-bot = discord.Bot()
+intents = discord.Intents.default()
+intents.members = True
+
+bot = discord.Bot(intents=intents)
 
 def checkBlacklist(userId):
   with open("blacklist.txt") as blacklist:
@@ -32,6 +35,12 @@ def replaceAll(str, char, rechar):
   newstr = str.replace(char, rechar)
   if newstr == str: return False
   else: return newstr
+
+def getAllMembers():
+  members = 0
+  for guild in bot.guilds:
+    members += len(guild.members)
+  return members
 
 @bot.event
 async def on_application_command_error(ctx, error):
@@ -491,11 +500,18 @@ async def endgame(ctx, roomcode: str):
       else:
         print(end.json())
         await ctx.respond("Failed to end the game!")
-"""
+""" 
+
+async def botStatus():
+  while True:
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(getAllMembers()))), status=discord.Status.online)
+    asyncio.sleep(3600)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help with {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
+    asyncio.sleep(3600)
 
 @bot.event
 async def on_ready():
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help | {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
   print("Logged in as {0.user}".format(bot))
+  bot.loop.create_task(botStatus())
 
 bot.run(os.environ['BOT_TOKEN'])
