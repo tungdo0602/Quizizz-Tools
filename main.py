@@ -1,13 +1,14 @@
 import discord
 import io
-from discord.ext import commands
-from discord.commands import Option, permissions
 import random
 import requests
 import os
 import string
 import time
 import datetime
+import asyncio
+from discord.ext import commands
+from discord.commands import Option, permissions
 from datetime import datetime
 
 loginmessage = "Login Required for user"
@@ -514,4 +515,4 @@ async def on_ready():
   print("Logged in as {0.user}".format(bot))
   bot.loop.create_task(botStatus())
 
-bot.run(os.environ['BOT_TOKEN']) 
+bot.run(os.environ['BOT_TOKEN'])
