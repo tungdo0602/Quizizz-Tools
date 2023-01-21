@@ -514,4 +514,4 @@ async def on_ready():
   print("Logged in as {0.user}".format(bot))
   bot.loop.create_task(botStatus())
 
-bot.run(os.environ['BOT_TOKEN'])
+bot.run(os.environ['BOT_TOKEN']) 
