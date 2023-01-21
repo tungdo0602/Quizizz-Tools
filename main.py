@@ -38,9 +38,9 @@ def replaceAll(str, char, rechar):
   else: return newstr
 
 def getAllMembers():
-  members = 0
+  members = []
   for guild in bot.guilds:
-    members += len(guild.members)
+    members += guild.members
   return members
 
 @bot.event
@@ -158,9 +158,17 @@ async def ownertools(ctx, tool: str):
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
+    embed = discord.Embed(title=" ", color=discord.Color.random())
     if tool.casefold() == "getguilds":
       guilds = str(bot.guilds).replace("[", "").replace("]", "").replace(", ", "\n")
       await ctx.respond(" ", file=discord.File(io.StringIO(guilds), "guilds.txt"))
+    elif tool.casefold() == "info":
+      embed.set_author(name="Info")
+      embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
+      embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
+      embed.add_field(name="Total Members", value="`{}`".format(str(len(getAllMembers()))), inline=False)
+      embed.set_footer(text=str(datetime.now()))
+      await ctx.respond(embed=embed)
     else:
       await ctx.respond("Unknown Tools.")
 
@@ -505,10 +513,10 @@ async def endgame(ctx, roomcode: str):
 
 async def botStatus():
   while True:
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(getAllMembers()))), status=discord.Status.online)
-    asyncio.sleep(3600)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(len(getAllMembers())))), status=discord.Status.online)
+    await asyncio.sleep(3600)
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help with {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
-    asyncio.sleep(3600)
+    await asyncio.sleep(3600)
 
 @bot.event
 async def on_ready():
