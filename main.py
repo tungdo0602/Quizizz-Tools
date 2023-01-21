@@ -148,12 +148,11 @@ async def ownertools(ctx, tool: str):
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
-    match tool:
-      case "getguilds":
-        guilds = str(bot.guilds).replace("[", "").replace("]", "").replace(", ", "\n")
-        await ctx.respond(" ", file=discord.File(io.StringIO(guilds), "guilds.txt"))
-      case _:
-        await ctx.respond("Unknown Tools.")
+    if tool.casefold() == "getguilds":
+      guilds = str(bot.guilds).replace("[", "").replace("]", "").replace(", ", "\n")
+      await ctx.respond(" ", file=discord.File(io.StringIO(guilds), "guilds.txt"))
+    else:
+      await ctx.respond("Unknown Tools.")
 
 blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
