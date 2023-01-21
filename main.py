@@ -54,8 +54,11 @@ def createHelpPage(pageNum=0):
       "</vote:960884315477123163>": "Vote for the bot.",
       "</help:963096500848697384>": "Show help.",
       "</invites:1065500914183569470>": "Invite stuffs.",
-      "</ping:981358400568975440>": "Pong!",
-      "</blacklist:1057979972515545099>": "Blacklist manager."
+      "</ping:981358400568975440>": "Pong!"
+    },
+    "Owner Commands": {
+      "/blacklist": "Blacklist manager.",
+      "/ownertools": "Owner tools"
     }
   }
   pageNum = pageNum % len(list(helpData))
@@ -139,10 +142,23 @@ async def invites(ctx):
   embed.set_footer(text="Invite information")
   await ctx.respond(embed=embed)
 
+@bot.slash_command(description="Owner Tools")
+async def ownertools(ctx, tool: str):
+  await ctx.defer(ephemeral=True)
+  if str(ctx.author.id) != "818856266721132564":
+    await ctx.respond("You can't use this command :thinking:")
+  else:
+    match tool:
+      case "getguilds":
+        guilds = str(bot.guilds).replace("[", "").replace("]", "").replace(", ", "\n")
+        await ctx.respond(" ", file=discord.File(io.StringIO(guilds), "guilds.txt"))
+      case _:
+        await ctx.respond("Unknown Tools.")
+
 blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
 async def add(ctx, userid: str):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -156,7 +172,7 @@ async def add(ctx, userid: str):
 
 @blacklist.command(description="Remove user from the list")
 async def remove(ctx, userid: str):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -174,7 +190,7 @@ async def remove(ctx, userid: str):
 
 @blacklist.command(description="Clear the list")
 async def clear(ctx):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
@@ -186,7 +202,7 @@ async def clear(ctx):
 
 @blacklist.command(description="View the list")
 async def view(ctx):
-  await ctx.defer()
+  await ctx.defer(ephemeral=True)
   if str(ctx.author.id) != "818856266721132564":
     await ctx.respond("You can't use this command :thinking:")
   else:
