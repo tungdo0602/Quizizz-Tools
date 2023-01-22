@@ -123,7 +123,6 @@ async def ping(ctx):
   embed = discord.Embed(title=" ", color=discord.Color.random())
   embed.set_author(name="Pong!")
   embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
-  embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
   embed.set_footer(text=str(datetime.now()))
   await ctx.respond(embed=embed)
 
