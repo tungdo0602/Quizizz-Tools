@@ -524,12 +524,12 @@ async def on_ready():
 
 #render.com method
 import flask
-
+import threading
 webapp = flask.Flask(__name__)
 @webapp.route('/')
 def index():
   return "App Running!"
 
-webapp.run(host="0.0.0.0", port=8080)
+threading.Thread(target=webapp.run, args=("0.0.0.0", 8080)).start()
 
 bot.run(os.environ['BOT_TOKEN'])
