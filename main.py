@@ -522,15 +522,4 @@ async def on_ready():
   print("Logged in as {0.user}".format(bot))
   bot.loop.create_task(botStatus())
 
-#render.com method
-import flask
-
-app = flask.Flask(__name__)
-
-@app.route('/')
-def index():
-  return "App Running!"
-
-app.run(host="0.0.0.0", port=8080)
-
 bot.run(os.environ['BOT_TOKEN'])
