@@ -512,24 +512,14 @@ async def endgame(ctx, roomcode: str):
 
 async def botStatus():
   while True:
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(len(getAllMembers())))), status=discord.Status.online)
-    await asyncio.sleep(3600)
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help with {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
+    await asyncio.sleep(3600)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(len(getAllMembers())))), status=discord.Status.online)
     await asyncio.sleep(3600)
 
 @bot.event
 async def on_ready():
   print("Logged in as {0.user}".format(bot))
   bot.loop.create_task(botStatus())
-
-#render.com method
-import flask
-import threading
-webapp = flask.Flask(__name__)
-@webapp.route('/')
-def index():
-  return "App Running!"
-
-threading.Thread(target=webapp.run, args=("0.0.0.0", 8080)).start()
 
 bot.run(os.environ['BOT_TOKEN'])
