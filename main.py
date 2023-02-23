@@ -56,9 +56,9 @@ def createHelpPage(pageNum=0):
       "</accountgenerator:948197452685672508>": "Generate quizizz account.",
       "</addplayer:950656396444172338>": "Add player to room.",
       "</addpowerup:928500685102776352>": "Add powerup to player.",
-      "</floodroom:928500685102776354>": "Flood Quizizz room with bot.",
       "</getroominfo:958753737600536616>": "Export room info.",
-      "</roomfinder:928500685102776353>": "Find a active Quizizz room."
+      "</roomfinder:928500685102776353>": "Find a active Quizizz room.",
+      "</spamreaction:1078358844771668058>": "Spam reaction."
     },
     "Other Commands": {
       "</vote:960884315477123163>": "Vote for the bot.",
@@ -415,29 +415,6 @@ async def roomfinder(ctx):
       """)
         break
 
-@bot.slash_command(description="Flood a Quizizz room with bots!")
-@commands.cooldown(1, 10, type=commands.BucketType.user)
-async def floodroom(ctx, roomcode: str, botamount: int):
-  await ctx.defer(ephemeral=True)
-  if checkBlacklist(str(ctx.author.id)):
-    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
-  else:
-    if botamount > 25:
-      await ctx.respond("Please add smaller than 25 bots per command!")
-    else:
-      #await ctx.respond(f"Adding Bot to room `{roomcode}`")
-      room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
-      rdata = room.json().get('room')
-      if not rdata:
-        await ctx.respond("Invaild Room Code!")
-      else:
-        roomhash = rdata.get('hash')
-        for i in range(botamount):
-          fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
-          name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-          addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": name, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
-        await ctx.respond(f"Successfully Added {i+1} Bots to `{roomcode}`")
-
 @bot.slash_command(description="Export room info")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
 async def getroominfo(ctx, roomcode: str):
@@ -453,7 +430,28 @@ async def getroominfo(ctx, roomcode: str):
 
 @bot.slash_command(description="Add player to room")
 @commands.cooldown(1, 10, type=commands.BucketType.user)
-async def addplayer(ctx, roomcode: str, playername: str):
+async def addplayer(ctx, roomcode: str, playername: str = "", amount: int = 1):
+  await ctx.defer(ephemeral=True)
+  if checkBlacklist(str(ctx.author.id)):
+    await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
+  else:
+    success = 0
+    room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
+    rdata = room.json().get('room')
+    if rdata:
+      roomhash = rdata.get('hash')
+      for i in range(amount):
+        playername = playername or ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
+        addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername + str(i), "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
+        if addbot.status_code == 200:
+          success += 1
+      await ctx.respond(f"Successfully Added {success} Bots to `{roomcode}`")
+    else:
+      await ctx.respond("Invaild Room Code!")
+      
+@bot.slash_command(description="Spam Reaction")
+async def spamreaction(ctx, roomcode: str, playerid: str, reaction: Option(str, "Reactions", choices=["Flexed", "Sup?", "Finger Heart", "Blue Circle", "Sleepy", "Bruh", "uwu", "Once More", "SUS", "Mindblow", "OP", "Among Us", "GG", "IDK how to call this"]), intensity: int = 1, amount: int = 1):
   await ctx.defer(ephemeral=True)
   if checkBlacklist(str(ctx.author.id)):
     await ctx.respond("**You're currently in the blacklist, you can't use any command except someone clears the blacklist.**")
@@ -462,15 +460,45 @@ async def addplayer(ctx, roomcode: str, playername: str):
     rdata = room.json().get('room')
     if rdata:
       roomhash = rdata.get('hash')
-      fakeip = f"{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}.{str(random.randint(100, 255))}"
-      addbot = requests.post("https://game.quizizz.com/play-api/v5/join", json={"roomHash": roomhash, "player":{"id": playername, "origin": "web", "isGoogleAuth": False, "avatarId": random.randint(1, 10)}, "__cid__":"v5/join.|1.1632599434062", "ip": fakeip})
-      if addbot.status_code == 200:
-        await ctx.respond(f"Added `{playername}` to `{roomcode}`")
+      hostid = rdata.get('hostId')
+      reactions = {
+        "Flexed": 1,
+        "Sup?": 2,
+        "Finger Heart": 3,
+        "Blue Circle": 4,
+        "Sleepy": 5,
+        "Bruh": 6,
+        "uwu": 7,
+        "Once More": 8,
+        "SUS": 9,
+        "Mindblow": 10,
+        "OP": 11,
+        "Among Us": 12,
+        "GG": 13,
+        "IDK how to call this": 14
+      }
+      success = 0
+      if amount > 50:
+        await ctx.respond("You cannot react over 50 emoji per command. Please try again!")
       else:
-        await ctx.respond("Failed to add player to room!")
-    else:
-      await ctx.respond("Invaild Room Code!")
-        
+        for _ in range(amount):
+          res = requests.post("https://quizizz.com/play-api/reactionUpdate", json={
+            "hostId": hostid,
+            "playerId": playerid,
+            "questionId": "",
+            "reactionDetail": {
+              "id": reactions[reaction],
+              "intensity": intensity,
+            },
+            "roomHash": roomhash,
+            "triggerType": "live-reaction"
+          })
+          if res.status_code == 200:
+            success += 1
+        await ctx.respond("Reacted {} emojis!".format(success))
+
+
+
 """
 @bot.slash_command(description="Force Start ANY quizizz game.")
 @commands.cooldown(1, 5, type=commands.BucketType.user)
@@ -510,16 +538,9 @@ async def endgame(ctx, roomcode: str):
         await ctx.respond("Failed to end the game!")
 """ 
 
-async def botStatus():
-  while True:
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/help with {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
-    await asyncio.sleep(3600)
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} members!".format(str(len(getAllMembers())))), status=discord.Status.online)
-    await asyncio.sleep(3600)
-
 @bot.event
 async def on_ready():
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="/help with {} servers!".format(str(len(bot.guilds)))), status=discord.Status.online)
   print("Logged in as {0.user}".format(bot))
-  bot.loop.create_task(botStatus())
 
 bot.run(os.environ['BOT_TOKEN'])
