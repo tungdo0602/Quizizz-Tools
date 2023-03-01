@@ -7,6 +7,7 @@ import string
 import time
 import datetime
 import asyncio
+import threading
 from discord.ext import commands
 from discord.commands import Option, permissions
 from datetime import datetime
@@ -45,10 +46,10 @@ def getAllMembers():
 
 @bot.event
 async def on_application_command_error(ctx, error):
-  if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-      await ctx.respond("**You can use this command <t:{}:R>**".format(int(time.time() + error.retry_after)))
-  else:
-      await ctx.respond("**Unknown Error!**")
+    if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+        await ctx.respond(embed=discord.Embed(title="Woah, slow down!", description="You can use this command <t:{}:R>".format(int(time.time() + error.retry_after))))
+    else:
+        await ctx.respond(embed=discord.Embed(title="Unknown Error ¯\_(ツ)_/¯", description="```\n" + str(error) + "\n```"))
 
 def createHelpPage(pageNum=0):
   helpData = {
@@ -459,6 +460,18 @@ async def spamreaction(ctx, roomcode: str, playerid: str, reaction: Option(str, 
     room = requests.post('https://game.quizizz.com/play-api/v5/checkRoom', json={"roomCode": roomcode})
     rdata = room.json().get('room')
     if rdata:
+      def react(h,o,p,r,i):
+        return requests.post("https://quizizz.com/play-api/reactionUpdate", json={
+            "hostId": o,
+            "playerId": p,
+            "questionId": "",
+            "reactionDetail": {
+              "id": r,
+              "intensity": i,
+            },
+            "roomHash": h,
+            "triggerType": "live-reaction"
+          })
       roomhash = rdata.get('hash')
       hostid = rdata.get('hostId')
       reactions = {
@@ -477,26 +490,13 @@ async def spamreaction(ctx, roomcode: str, playerid: str, reaction: Option(str, 
         "GG": 13,
         "IDK how to call this": 14
       }
-      success = 0
       if amount > 50:
         await ctx.respond("You cannot react over 50 emoji per command. Please try again!")
       else:
+        await ctx.respond("Running... Please check the dashboard!")
         for _ in range(amount):
-          res = requests.post("https://quizizz.com/play-api/reactionUpdate", json={
-            "hostId": hostid,
-            "playerId": playerid,
-            "questionId": "",
-            "reactionDetail": {
-              "id": reactions[reaction],
-              "intensity": intensity,
-            },
-            "roomHash": roomhash,
-            "triggerType": "live-reaction"
-          })
-          if res.status_code == 200:
-            success += 1
-        await ctx.respond("Reacted {} emojis!".format(success))
-
+          threading.Thread(target=react, args=(roomhash, hostid, playerid, reactions[reaction], intensity)).start()
+          await asyncio.sleep(0.1)
 
 
 """
