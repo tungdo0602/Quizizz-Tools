@@ -26,23 +26,10 @@ def checkBlacklist(userId):
       else:
           return False
 
-def checkVote(userId):
-  check = requests.get("https://top.gg/api/bots/913442195388903467/check?userId={}".format(str(userId)), headers={"Authorization": os.environ['TOPGG_AUTH']})
-  if check.json().get("voted") == 1:
-      return True
-  else:
-      return False
-
 def replaceAll(str, char, rechar):
   newstr = str.replace(char, rechar)
   if newstr == str: return False
   else: return newstr
-
-def getAllMembers():
-  members = []
-  for guild in bot.guilds:
-    members += guild.members
-  return members
 
 @bot.event
 async def on_application_command_error(ctx, error):
@@ -68,8 +55,7 @@ def createHelpPage(pageNum=0):
       "</ping:981358400568975440>": "Pong!"
     },
     "Owner Commands": {
-      "/blacklist": "Blacklist manager.",
-      "/ownertools": "Owner tools"
+      "/blacklist": "Blacklist manager."
     }
   }
   pageNum = pageNum % len(list(helpData))
@@ -126,51 +112,6 @@ async def ping(ctx):
   embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
   embed.set_footer(text=str(datetime.now()))
   await ctx.respond(embed=embed)
-
-@bot.slash_command(description="Vote for the bot!")
-@commands.cooldown(1, 30, type=commands.BucketType.user)
-async def vote(ctx):
-  await ctx.defer()
-  embed = discord.Embed(title="Vote Status", color=discord.Color.random())
-  embed.add_field(name="Quizizz Tools", value="Click [here](https://top.gg/bot/913442195388903467/vote) to vote for the bot!", inline=True)
-  if checkVote(ctx.author.id):
-      embed.set_footer(text="You have voted today!")
-  elif checkVote(ctx.author.id) == False:
-      embed.set_footer(text="You haven't vote today!")
-  else:
-      embed.set_footer(text="An error occurred while trying to get the value!")
-  await ctx.respond(embed=embed)
-
-@bot.slash_command(description="Invite Stuffs")
-@commands.cooldown(1, 5, type=commands.BucketType.user)
-async def invites(ctx):
-  await ctx.defer()
-  embed = discord.Embed(title=" ", color=discord.Color.random())
-  embed.set_author(name="Quizizz Tools", icon_url="https://cdn.discordapp.com/avatars/913442195388903467/2aacaa2f10836e4f4814414cedef4fc8.png")
-  embed.add_field(name="Bot Invite", value="[Click me](https://discord.com/api/oauth2/authorize?client_id=913442195388903467&permissions=414464724032&scope=bot%20applications.commands)", inline=True)
-  embed.add_field(name="Discord Server", value="[Click me](https://discord.gg/YsT8rE2vqP)", inline=True)
-  embed.set_footer(text="Invite information")
-  await ctx.respond(embed=embed)
-
-@bot.slash_command(description="Owner Tools")
-async def ownertools(ctx, tool: str):
-  await ctx.defer(ephemeral=True)
-  if str(ctx.author.id) != "818856266721132564":
-    await ctx.respond("You can't use this command :thinking:")
-  else:
-    embed = discord.Embed(title=" ", color=discord.Color.random())
-    if tool.casefold() == "getguilds":
-      guilds = str(bot.guilds).replace("[", "").replace("]", "").replace(", ", "\n")
-      await ctx.respond(" ", file=discord.File(io.StringIO(guilds), "guilds.txt"))
-    elif tool.casefold() == "info":
-      embed.set_author(name="Info")
-      embed.add_field(name="Latency", value="`{} ms`".format(bot.latency), inline=True)
-      embed.add_field(name="Total Servers", value="`{}`".format(str(len(bot.guilds))), inline=True)
-      embed.add_field(name="Total Members", value="`{}`".format(str(len(getAllMembers()))), inline=False)
-      embed.set_footer(text=str(datetime.now()))
-      await ctx.respond(embed=embed)
-    else:
-      await ctx.respond("Unknown Tools.")
 
 blacklist = bot.create_group("blacklist", "Blacklist manager command")
 @blacklist.command(description="Add user to the list")
