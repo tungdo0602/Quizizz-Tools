@@ -26,9 +26,9 @@ def checkBlacklist(userId):
       else:
           return False
 
-def replaceAll(str, char, rechar):
-  newstr = str.replace(char, rechar)
-  if newstr == str: return False
+def replaceAll(s, char, rechar):
+  newstr = s.replace(char, rechar)
+  if newstr == s: return False
   else: return newstr
 
 @bot.event
